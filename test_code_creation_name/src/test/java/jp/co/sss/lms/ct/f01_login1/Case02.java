@@ -52,17 +52,53 @@ public class Case02 {
 	@Order(2)
 	@DisplayName("テスト02 DBに登録されていないユーザーでログイン")
 	void test02() {
-
-		goTo(LOGIN_URL);
+		//異常チェック
 		//間違った入力値でログイン
 		webDriver.findElement(By.id("loginId")).sendKeys("wrong-id");
 		webDriver.findElement(By.id("password")).sendKeys("wrong-password");
 		webDriver.findElement(By.cssSelector(".btn-primary ")).click();
-		//異常チェック
+		
+		pageLoadTimeout(30);
 		assertEquals("ログイン | LMS", webDriver.getTitle());
 		assertEquals("* ログインに失敗しました。", webDriver.findElement(By.cssSelector(".error")).getText());
+		getEvidence(new Object(){},"id_error");
 		
-		getEvidence(new Object(){});
+		//ID未入力の場合
+		webDriver.findElement(By.id("loginId")).clear();
+		webDriver.findElement(By.id("password")).sendKeys("ItTest2025");
+		webDriver.findElement(By.cssSelector(".btn-primary ")).click();
+		
+		pageLoadTimeout(30);
+		assertEquals("ログイン | LMS", webDriver.getTitle());
+		assertEquals("ログインIDは必須です。", webDriver.findElement(By.cssSelector(".error")).getText());
+		getEvidence(new Object(){},"null_password");
+		
+		//パスワード未入力の場合
+		webDriver.findElement(By.id("loginId")).sendKeys("StudentAA01");
+		webDriver.findElement(By.cssSelector(".btn-primary ")).click();
+		
+		pageLoadTimeout(30);
+		assertEquals("ログイン | LMS", webDriver.getTitle());
+		assertEquals("パスワードは必須です。", webDriver.findElement(By.cssSelector(".error")).getText());
+		getEvidence(new Object(){},"null_id");
+		
+		//パスワードの入力上限を超えた場合
+		webDriver.findElement(By.id("password")).sendKeys("abcdefghijklmnopqrstuvwxyz");
+		webDriver.findElement(By.cssSelector(".btn-primary ")).click();
+		
+		pageLoadTimeout(30);
+		assertEquals("ログイン | LMS", webDriver.getTitle());
+		assertEquals("パスワードの長さが最大値(20)を超えています。", webDriver.findElement(By.cssSelector(".error")).getText());
+		getEvidence(new Object(){},"over_maxlength_password");
+		
+		//回数上限を超えた場合
+		webDriver.findElement(By.id("password")).sendKeys("wrong-password");
+		webDriver.findElement(By.cssSelector(".btn-primary ")).click();
+		
+		pageLoadTimeout(30);
+		assertEquals("ログイン | LMS", webDriver.getTitle());
+		assertEquals("* 規定の回数を超えたため、アカウントにロックがかかりました。しばらくたってから再度お試しください。", webDriver.findElement(By.cssSelector(".error")).getText());
+		getEvidence(new Object(){},"login_lock");
 	}
 
 }
