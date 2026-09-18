@@ -1,6 +1,7 @@
 package jp.co.sss.lms.ct.f01_login1;
 
 import static jp.co.sss.lms.ct.util.WebDriverUtils.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -9,16 +10,22 @@ import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.openqa.selenium.By;
 
 /**
  * 結合テスト ログイン機能①
  * ケース02
  * @author holy
+ * @author 峠 伸治
  */
 @TestMethodOrder(OrderAnnotation.class)
 @DisplayName("ケース02 受講生 ログイン 認証失敗")
 public class Case02 {
 
+	private final int PORT = 8080;
+	
+	private final String LOGIN_URL = "http://localhost:" + PORT + "/lms";
+	
 	/** 前処理 */
 	@BeforeAll
 	static void before() {
@@ -35,14 +42,27 @@ public class Case02 {
 	@Order(1)
 	@DisplayName("テスト01 トップページURLでアクセス")
 	void test01() {
-		// TODO ここに追加
+		
+		goTo(LOGIN_URL);
+
+		assertEquals("ログイン | LMS", webDriver.getTitle());
 	}
 
 	@Test
 	@Order(2)
 	@DisplayName("テスト02 DBに登録されていないユーザーでログイン")
 	void test02() {
-		// TODO ここに追加
+
+		goTo(LOGIN_URL);
+		//間違った入力値でログイン
+		webDriver.findElement(By.id("loginId")).sendKeys("wrong-id");
+		webDriver.findElement(By.id("password")).sendKeys("wrong-password");
+		webDriver.findElement(By.cssSelector(".btn-primary ")).click();
+		//異常チェック
+		assertEquals("ログイン | LMS", webDriver.getTitle());
+		assertEquals("* ログインに失敗しました。", webDriver.findElement(By.cssSelector(".error")).getText());
+		
+		getEvidence(new Object(){});
 	}
 
 }
