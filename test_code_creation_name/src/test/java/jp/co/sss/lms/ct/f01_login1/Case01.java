@@ -17,6 +17,7 @@ import org.openqa.selenium.WebElement;
  * 結合テスト ログイン機能①
  * ケース01
  * @author holy
+ * @author 峠 伸治
  */
 @TestMethodOrder(OrderAnnotation.class)
 @DisplayName("ケース01 ログイン画面への遷移")
