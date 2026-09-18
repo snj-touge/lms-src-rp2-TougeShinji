@@ -23,9 +23,9 @@ import org.openqa.selenium.By;
 public class Case02 {
 
 	private final int PORT = 8080;
-	
+
 	private final String LOGIN_URL = "http://localhost:" + PORT + "/lms";
-	
+
 	/** 前処理 */
 	@BeforeAll
 	static void before() {
@@ -40,65 +40,86 @@ public class Case02 {
 
 	@Test
 	@Order(1)
-	@DisplayName("テスト01 トップページURLでアクセス")
+	@DisplayName("テスト01 ID未入力状態でログイン")
 	void test01() {
-		
+
 		goTo(LOGIN_URL);
-
-		assertEquals("ログイン | LMS", webDriver.getTitle());
-	}
-
-	@Test
-	@Order(2)
-	@DisplayName("テスト02 DBに登録されていないユーザーでログイン")
-	void test02() {
-		//異常チェック
-		//間違った入力値でログイン
-		webDriver.findElement(By.id("loginId")).sendKeys("wrong-id");
-		webDriver.findElement(By.id("password")).sendKeys("wrong-password");
-		webDriver.findElement(By.cssSelector(".btn-primary ")).click();
-		
-		pageLoadTimeout(30);
-		assertEquals("ログイン | LMS", webDriver.getTitle());
-		assertEquals("* ログインに失敗しました。", webDriver.findElement(By.cssSelector(".error")).getText());
-		getEvidence(new Object(){},"id_error");
 		
 		//ID未入力の場合
 		webDriver.findElement(By.id("loginId")).clear();
 		webDriver.findElement(By.id("password")).sendKeys("ItTest2025");
 		webDriver.findElement(By.cssSelector(".btn-primary ")).click();
-		
+
 		pageLoadTimeout(30);
 		assertEquals("ログイン | LMS", webDriver.getTitle());
 		assertEquals("ログインIDは必須です。", webDriver.findElement(By.cssSelector(".error")).getText());
-		getEvidence(new Object(){},"null_password");
-		
+		getEvidence(new Object() {});
+	}
+	
+	@Test
+	@Order(2)
+	@DisplayName("テスト02 パスワード未入力状態でログイン")
+	void test02() {
 		//パスワード未入力の場合
 		webDriver.findElement(By.id("loginId")).sendKeys("StudentAA01");
 		webDriver.findElement(By.cssSelector(".btn-primary ")).click();
-		
+
 		pageLoadTimeout(30);
 		assertEquals("ログイン | LMS", webDriver.getTitle());
 		assertEquals("パスワードは必須です。", webDriver.findElement(By.cssSelector(".error")).getText());
-		getEvidence(new Object(){},"null_id");
-		
+		getEvidence(new Object() {});				
+	}
+	
+	@Test
+	@Order(3)
+	@DisplayName("テスト03 DBに登録されていないユーザーでログイン")
+	void test03() {
+
+		goTo(LOGIN_URL);
+
+		//間違った入力値でログイン
+		webDriver.findElement(By.id("loginId")).sendKeys("wrong-id");
+		webDriver.findElement(By.id("password")).sendKeys("wrong-password");
+		webDriver.findElement(By.cssSelector(".btn-primary ")).click();
+
+		pageLoadTimeout(30);
+		assertEquals("ログイン | LMS", webDriver.getTitle());
+		assertEquals("* ログインに失敗しました。", webDriver.findElement(By.cssSelector(".error")).getText());
+		getEvidence(new Object() {});
+	}
+	
+	@Test
+	@Order(4)
+	@DisplayName("テスト04 パスワード入力上限を超えた状態でログイン")
+	void test04() {
 		//パスワードの入力上限を超えた場合
 		webDriver.findElement(By.id("password")).sendKeys("abcdefghijklmnopqrstuvwxyz");
 		webDriver.findElement(By.cssSelector(".btn-primary ")).click();
-		
+
 		pageLoadTimeout(30);
 		assertEquals("ログイン | LMS", webDriver.getTitle());
 		assertEquals("パスワードの長さが最大値(20)を超えています。", webDriver.findElement(By.cssSelector(".error")).getText());
-		getEvidence(new Object(){},"over_maxlength_password");
-		
+		getEvidence(new Object() {});
+	}
+	
+	@Test
+	@Order(5)
+	@DisplayName("テスト05 ログイン入力上限回数を超えた状態でログイン")
+	void test05() {
 		//回数上限を超えた場合
+		//既に2度間違えているため、追加で1回ログインミスを行う
 		webDriver.findElement(By.id("password")).sendKeys("wrong-password");
 		webDriver.findElement(By.cssSelector(".btn-primary ")).click();
-		
+
+		pageLoadTimeout(30);
+		//ここで3度間違えているため、回数上限を超えている状態となる
+		webDriver.findElement(By.id("password")).sendKeys("wrong-password");
+		webDriver.findElement(By.cssSelector(".btn-primary ")).click();
+
 		pageLoadTimeout(30);
 		assertEquals("ログイン | LMS", webDriver.getTitle());
-		assertEquals("* 規定の回数を超えたため、アカウントにロックがかかりました。しばらくたってから再度お試しください。", webDriver.findElement(By.cssSelector(".error")).getText());
-		getEvidence(new Object(){},"login_lock");
+		assertEquals("* 規定の回数を超えたため、アカウントにロックがかかりました。しばらくたってから再度お試しください。",webDriver.findElement(By.cssSelector(".error")).getText());
+		getEvidence(new Object() {});
 	}
 
 }
