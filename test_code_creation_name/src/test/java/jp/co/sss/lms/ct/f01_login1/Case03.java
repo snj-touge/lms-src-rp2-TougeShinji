@@ -1,6 +1,7 @@
 package jp.co.sss.lms.ct.f01_login1;
 
 import static jp.co.sss.lms.ct.util.WebDriverUtils.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -9,16 +10,22 @@ import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.openqa.selenium.By;
 
 /**
  * 結合テスト ログイン機能①
  * ケース03
  * @author holy
+ * @author 峠 伸治
  */
 @TestMethodOrder(OrderAnnotation.class)
 @DisplayName("ケース03 受講生 ログイン 正常系")
 public class Case03 {
 
+	private final int PORT = 8080;
+	
+	private final String LOGIN_URL = "http://localhost:" + PORT + "/lms";
+	
 	/** 前処理 */
 	@BeforeAll
 	static void before() {
@@ -33,16 +40,18 @@ public class Case03 {
 
 	@Test
 	@Order(1)
-	@DisplayName("テスト01 トップページURLでアクセス")
+	@DisplayName("テスト01 初回ログイン済みの受講生ユーザーでログイン")
 	void test01() {
-		// TODO ここに追加
-	}
-
-	@Test
-	@Order(2)
-	@DisplayName("テスト02 初回ログイン済みの受講生ユーザーでログイン")
-	void test02() {
-		// TODO ここに追加
+		goTo(LOGIN_URL);
+		//正しい入力値でログイン
+		webDriver.findElement(By.id("loginId")).sendKeys("StudentAA01");
+		webDriver.findElement(By.id("password")).sendKeys("ItTest2025");
+		webDriver.findElement(By.cssSelector(".btn-primary ")).click();
+		
+		pageLoadTimeout(30);
+		assertEquals("コース詳細 | LMS", webDriver.getTitle());
+		
+		getEvidence(new Object(){});
 	}
 
 }
