@@ -77,11 +77,9 @@ public class Case07 {
 		for(WebElement primary : primarys) {
 			// 子要素(コースの研修内容部分、子要素に研修日が存在する)
 			List<WebElement> sctionList = primary.findElements(By.tagName("tr"));
-			System.out.println(primary.findElement(By.className("panel-heading")).getText());
 			for(WebElement sction : sctionList) {
 				// 孫要素(研修日部分、日付や研修の詳細、レポート登録情報、詳細ページへの遷移ボタンがある)
 				// レポート登録の要素が未提出のものを検索
-				System.out.println("\t"+sction.findElement(By.className("wh")).getText());
 				if(sction.findElement(By.className("w10per")).getText().equals("未提出")) {
 					// 「詳細」要素をクリック
 					sction.findElement(By.className("btn-default")).click();
