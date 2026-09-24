@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 
 /**
  * 結合テスト ログイン機能①
@@ -37,11 +38,25 @@ public class Case03 {
 	static void after() {
 		closeDriver();
 	}
-
+	
 	@Test
 	@Order(1)
-	@DisplayName("テスト01 初回ログイン済みの受講生ユーザーでログイン")
+	@DisplayName("テスト01 トップページURLでアクセス")
 	void test01() {
+		
+		//ログイン画面への遷移
+		goTo(LOGIN_URL);
+		//内容のチェック
+		assertEquals("ログイン | LMS", webDriver.getTitle());
+		WebElement loginButtonElement = webDriver.findElement(By.cssSelector(".btn-primary "));
+		assertEquals("ログイン", loginButtonElement.getAttribute("value"));
+		
+	}
+
+	@Test
+	@Order(2)
+	@DisplayName("テスト02 初回ログイン済みの受講生ユーザーでログイン")
+	void test02() {
 		goTo(LOGIN_URL);
 		//正しい入力値でログイン
 		webDriver.findElement(By.id("loginId")).sendKeys("StudentAA01");
