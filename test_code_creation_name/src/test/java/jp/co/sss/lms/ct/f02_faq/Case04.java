@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 
 /**
  * 結合テスト よくある質問機能
@@ -39,11 +40,25 @@ public class Case04 {
 	static void after() {
 		closeDriver();
 	}
-
+	
 	@Test
 	@Order(1)
-	@DisplayName("テスト01 初回ログイン済みの受講生ユーザーでログイン")
+	@DisplayName("テスト01 トップページURLでアクセス")
 	void test01() {
+		
+		//ログイン画面への遷移
+		goTo(LOGIN_URL);
+		//内容のチェック
+		assertEquals("ログイン | LMS", webDriver.getTitle());
+		WebElement loginButtonElement = webDriver.findElement(By.cssSelector(".btn-primary "));
+		assertEquals("ログイン", loginButtonElement.getAttribute("value"));
+		
+	}
+
+	@Test
+	@Order(2)
+	@DisplayName("テスト02 初回ログイン済みの受講生ユーザーでログイン")
+	void test02() {
 		goTo(LOGIN_URL);
 		//正しい入力値でログイン
 		webDriver.findElement(By.id("loginId")).sendKeys("StudentAA01");
@@ -58,9 +73,9 @@ public class Case04 {
 	}
 
 	@Test
-	@Order(2)
-	@DisplayName("テスト02 上部メニューの「ヘルプ」リンクからヘルプ画面に遷移")
-	void test02() {
+	@Order(3)
+	@DisplayName("テスト03 上部メニューの「ヘルプ」リンクからヘルプ画面に遷移")
+	void test03() {
 		
 		webDriver.findElement(By.linkText("機能")).click();
 		webDriver.findElement(By.linkText("ヘルプ")).click();
@@ -73,9 +88,9 @@ public class Case04 {
 	}
 
 	@Test
-	@Order(3)
-	@DisplayName("テスト03 「よくある質問」リンクからよくある質問画面を別タブに開く")
-	void test03() {
+	@Order(4)
+	@DisplayName("テスト04 「よくある質問」リンクからよくある質問画面を別タブに開く")
+	void test04() {
 		
 		//別タブで表示されるためタブ名を記録
 		String originalWindow = webDriver.getWindowHandle();
