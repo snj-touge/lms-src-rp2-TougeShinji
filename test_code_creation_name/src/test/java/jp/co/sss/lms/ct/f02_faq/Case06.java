@@ -19,6 +19,7 @@ import org.openqa.selenium.WebElement;
  * 結合テスト よくある質問機能
  * ケース06
  * @author holy
+ * @author 峠 伸治
  */
 @TestMethodOrder(OrderAnnotation.class)
 @DisplayName("ケース06 カテゴリ検索 正常系")

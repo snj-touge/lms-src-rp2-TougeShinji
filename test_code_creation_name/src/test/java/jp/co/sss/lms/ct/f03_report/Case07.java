@@ -19,6 +19,7 @@ import org.openqa.selenium.WebElement;
  * 結合テスト レポート機能
  * ケース07
  * @author holy
+ * @author 峠 伸治
  */
 @TestMethodOrder(OrderAnnotation.class)
 @DisplayName("ケース07 受講生 レポート新規登録(日報) 正常系")

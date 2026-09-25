@@ -20,6 +20,7 @@ import org.openqa.selenium.WebElement;
  * 結合テスト よくある質問機能
  * ケース05
  * @author holy
+ * @author 峠 伸治
  */
 @TestMethodOrder(OrderAnnotation.class)
 @DisplayName("ケース05 キーワード検索 正常系")
