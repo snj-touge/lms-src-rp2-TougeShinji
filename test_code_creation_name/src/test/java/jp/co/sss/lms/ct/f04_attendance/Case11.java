@@ -1,6 +1,9 @@
 package jp.co.sss.lms.ct.f04_attendance;
 
 import static jp.co.sss.lms.ct.util.WebDriverUtils.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.List;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -9,6 +12,9 @@ import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 
 /**
  * 結合テスト 勤怠管理機能
@@ -19,6 +25,13 @@ import org.junit.jupiter.api.TestMethodOrder;
 @DisplayName("ケース11 受講生 勤怠直接編集 正常系")
 public class Case11 {
 
+	private final int PORT = 8080;
+	
+	private final String LOGIN_URL = "http://localhost:" + PORT + "/lms";
+	
+	private final String START_TIME = "09:00";
+	private final String END_TIME = "18:00";
+	
 	/** 前処理 */
 	@BeforeAll
 	static void before() {
@@ -35,35 +48,84 @@ public class Case11 {
 	@Order(1)
 	@DisplayName("テスト01 トップページURLでアクセス")
 	void test01() {
-		// TODO ここに追加
+		
+		goTo(LOGIN_URL);
+
+		assertEquals("ログイン | LMS", webDriver.getTitle());
+		WebElement loginButtonElement = webDriver.findElement(By.cssSelector(".btn-primary "));
+		assertEquals("ログイン", loginButtonElement.getAttribute("value"));
 	}
 
 	@Test
 	@Order(2)
 	@DisplayName("テスト02 初回ログイン済みの受講生ユーザーでログイン")
 	void test02() {
-		// TODO ここに追加
+
+		webDriver.findElement(By.id("loginId")).sendKeys("StudentAA01");
+		webDriver.findElement(By.id("password")).sendKeys("ItTest2025");
+		webDriver.findElement(By.cssSelector(".btn-primary ")).click();
+
+		pageLoadTimeout(30);
+		assertEquals("コース詳細 | LMS", webDriver.getTitle());
 	}
 
 	@Test
 	@Order(3)
 	@DisplayName("テスト03 上部メニューの「勤怠」リンクから勤怠管理画面に遷移")
 	void test03() {
-		// TODO ここに追加
+		
+		webDriver.findElement(By.linkText("勤怠")).click();
+		
+		pageLoadTimeout(30);
+		
+		Alert alert = webDriver.switchTo().alert();
+		if(alert != null) {
+			alert.accept();
+		}
+		
+		assertEquals("勤怠情報変更｜LMS", webDriver.getTitle());
+		
+		getEvidence(new Object() {});
+		
 	}
 
 	@Test
 	@Order(4)
 	@DisplayName("テスト04 「勤怠情報を直接編集する」リンクから勤怠情報直接変更画面に遷移")
 	void test04() {
-		// TODO ここに追加
+
+		webDriver.findElement(By.linkText("勤怠情報を直接編集する")).click();
+		
+		pageLoadTimeout(30);
+		
+		assertEquals("勤怠情報変更｜LMS", webDriver.getTitle());
+		
+		getEvidence(new Object() {});
 	}
 
 	@Test
 	@Order(5)
 	@DisplayName("テスト05 すべての研修日程の勤怠情報を正しく更新し勤怠管理画面に遷移")
 	void test05() {
-		// TODO ここに追加
+		for(WebElement regularHoursButton : webDriver.findElement(By.tagName("table")).findElements(By.className("w60"))) {
+			regularHoursButton.click();
+		}
+		
+		scrollBy(String.valueOf(webDriver.findElement(By.tagName("table")).getSize().getHeight()));
+		
+		webDriver.findElement(By.name("complete")).click();
+		webDriver.switchTo().alert().accept();
+		
+		pageLoadTimeout(30);
+		
+		assertEquals("勤怠情報変更｜LMS", webDriver.getTitle());
+		for(WebElement trTag : webDriver.findElement(By.tagName("tbody")).findElements(By.tagName("tr"))) {
+			List<WebElement> regularHours = trTag.findElements(By.className("w80"));
+			assertEquals(START_TIME,regularHours.get(0).getText());
+			assertEquals(END_TIME,regularHours.get(1).getText());
+		}
+		
+		getEvidence(new Object() {});
 	}
 
 }
