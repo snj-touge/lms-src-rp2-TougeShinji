@@ -24,7 +24,7 @@ import org.openqa.selenium.WebElement;
 @DisplayName("ケース08 受講生 レポート修正(週報) 正常系")
 public class Case08 {
 
-private final int PORT = 8080;
+	private final int PORT = 8080;
 	
 	private final String LOGIN_URL = "http://localhost:" + PORT + "/lms";
 	private final String SELECT_ELEMENT_DAY = "2022年10月2日(日)";
@@ -150,15 +150,16 @@ private final int PORT = 8080;
 		
 		List<WebElement> reports = tables.get(2).findElements(By.tagName("tr"));
 		isFinished:
-		for(WebElement report : reports) {
+		for (WebElement report : reports) {
 			List<WebElement> tdTags = report.findElements(By.tagName("td"));
 			if (tdTags.size() > 0 && tdTags.get(0).getText().equals(SELECT_ELEMENT_DAY)
 					&& tdTags.get(1).getText().equals("週報【デモ】")) {
-					for(WebElement imputTag : tdTags.get(4).findElements(By.tagName("input"))) {
-						if(imputTag.getAttribute("value").equals("詳細"))
-							imputTag.click();
+				for (WebElement imputTag : tdTags.get(4).findElements(By.tagName("input"))) {
+					if (imputTag.getAttribute("value").equals("詳細")) {
+						imputTag.click();
 						break isFinished;
 					}
+				}
 			}
 		}
 		
